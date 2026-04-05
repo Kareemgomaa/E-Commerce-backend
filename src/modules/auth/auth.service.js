@@ -25,12 +25,12 @@ export const signup=async(req,res)=>{
     })
     if(newUser){
         await newUser.save();
-        const verificationLink = `http://localhost:3000/api/v1/auth/verify-email/${verificationToken}`;
-        await sendEmail({
+        const verificationLink = `https://e-commerce-backend-production-30fa.up.railway.app/api/v1/auth/verify-email/${verificationToken}`;
+        sendEmail({
             email:newUser.email,
             subject:"Verify Your Email",
             text:`use this link to verify your email ${verificationLink}`
-        })
+        }).catch(err => console.error("Email error:", err));
         res.status(201).json({message:"user created successfully",newUser})
     }else{
         res.json({message:"user not created"})
@@ -99,12 +99,12 @@ export const resendVerification=async(req,res)=>{
     user.verificationToken = updatedVerificationToken;
     user.verificationTokenExpiresAt = updatedVerificationTokenExpiresAt;
     await user.save();
-    const verificationLink = `http://localhost:3000/api/v1/auth/verify-email/${updatedVerificationToken}`;
-        await sendEmail({
-            email:user.email,
-            subject:"Verify Your Email",
-            text:`use this link to verify your email ${verificationLink}`
-        })
+    const verificationLink = `https://e-commerce-backend-production-30fa.up.railway.app/api/v1/auth/verify-email/${updatedVerificationToken}`;
+    sendEmail({
+        email:user.email,
+        subject:"Verify Your Email",
+        text:`use this link to verify your email ${verificationLink}`
+    }).catch(err => console.error("Email error:", err));
     res.status(200).json({message:"verification email sent successfully"}) 
 }
 export const fogetPassword=async (req,res)=>{
@@ -118,14 +118,13 @@ export const fogetPassword=async (req,res)=>{
     user.resetPasswordToken=resetPasswordToken;
     user.resetPasswordTokenExpiresAt=resetPasswordTokenExpiresAt;
     await user.save();
-    const resetLink = `http://localhost:3000/api/v1/auth/reset-password/${resetPasswordToken}`;
-        await sendEmail({
-            email:user.email,
-            subject:"Verify Your Email",
-            text:`use this link to change your password ${resetLink}`
-        })
-        res.status(200).json({message:"password reset email sent successfully"})
-    
+    const resetLink = `https://e-commerce-backend-production-30fa.up.railway.app/api/v1/auth/reset-password/${resetPasswordToken}`;
+    sendEmail({
+        email:user.email,
+        subject:"Reset Your Password",
+        text:`use this link to change your password ${resetLink}`
+    }).catch(err => console.error("Email error:", err));
+    res.status(200).json({message:"password reset email sent successfully"})
 }
 export const resetPassword=async(req,res)=>{
     let {token}=req.params;
