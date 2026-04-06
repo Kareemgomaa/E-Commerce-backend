@@ -18,6 +18,7 @@ import rateLimit from "express-rate-limit";
 
 export const bootstrap =()=>{
     let app=express();
+    app.set('trust proxy', 1);
     const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
